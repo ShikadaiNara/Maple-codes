@@ -1,0 +1,1582 @@
+sgm := proc (expr) 
+	local f, f1, f2; 
+	f := expr ; 
+	f1:= subs({a = b, b = c, c = a, x = y, y = z, z = x}, f); 
+	f2 := subs({a = b, b = c, c = a, x = y, y = z, z = x}, f1); 
+	return subs(f+f1+f2) 
+end proc:
+
+pro := proc (expr) 
+	local f, f1, f2; 
+	f := expr; 
+	f1:= subs({a = b, b = c, c = a, x = y, y = z, z = x}, f); 
+	f2 := subs({a = b, b = c, c = a, x = y, y = z, z = x}, f1); 
+	return subs(f*f1*f2) 
+end proc:
+
+osos3 := proc(expr) 
+	local A, B, C, J, temp, f; 
+	f := expr; 
+	A := coeff(subs({a = a, b = 1, c = 0}, numer(f)), a^3); 
+	B := coeff(subs({a = a, b = 1, c = 0}, numer(f)), a^2); 
+	C := coeff(subs({a = a, b = 1, c = 0}, numer(f)), a); 
+	J := coeff(subs({a = a, b = 1, c = 1}, numer(f)), a) - B - C; 
+	temp := sgm((a*m[1] + b*m[2] + c*m[3])*(a - b)^2); 
+	if subs({a = 1, b = 1, c = 1}, f) = 0 then 
+		subs({m[1] = 1/2*A - 1/6*B + 1/6*C, m[2] = 1/2*A + 1/6*B - 1/6*C, m[3] = 1/2*A + 1/2*B + 1/2*C}, temp)/(denom(f)); 
+	else false 
+	fi
+end proc:
+
+ss3 := proc(f) 
+	local A, B, C, temp; 
+	A := coeff(subs({a = a, b = 1, c = 0}, numer(f)), a^3); 
+	B := coeff(subs({a = a, b = 1, c = 0}, numer(f)), a^2); 
+	C := coeff(subs({a = a, b = 1, c = 0}, numer(f)), a); 
+	temp:=(a*m[1]+b*m[2]+c*m[3])*(a-b)^2+(a*m[4]+b*m[5]+c*m[6])*(a-c)*(b-c); 
+	if subs({a = 1, b = 1, c = 1}, f) = 0 then 
+		subs({m[1] = A, m[2] =A, m[3] = A + B + C, m[4] = A + B, m[5] = A + C, m[6] = A}, temp)/(denom(f)); 
+	else false 
+	fi 
+end proc:
+
+qratic := proc (f, x) 
+	local a, b, c; 
+	a := coeff(collect(numer(f), x), x^2); 
+	b := coeff(collect(numer(f), x), x); 
+	c := coeff(collect(numer(f), x), x, 0); 
+	subs((factor(a*(x+(1/2)*b/a)^2)+factor((1/4)*(4*a*c-b^2)/a))/denom(f)) 
+end proc:
+
+ss4 := proc(f) 
+	local A, B, C, F, D:
+	A := coeff(subs({a = a, b = 1, c = 0}, numer(f)), a^4):
+	B := coeff(subs({a = a, b = 1, c = 0}, numer(f)), a^3):
+	C := coeff(subs({a = a, b = 1, c = 0}, numer(f)), a):
+	F := coeff(subs({a = a, b = 1, c = 0}, numer(f)), a^2): 
+	D:=coeff(subs({a=a,b=1,c=1},numer(f)),a^2)-2*F:
+	if subs({a = 1, b = 1, c = 1}, numer(f)) = 0 then 
+		subs(((A*((a + b)^2 + c^2) + B*c*(a + b) + C*c*(a + b) + F*c^2)*(a - b)^2 + (A*((a + c)*(b + c) + a*b) + B*a*(a + c) + C*b*(b + c) + F*a*b)*(a - c)*(b - c))/denom(f)); 
+	else print(`Can't give SS form`); 
+	fi;
+end proc:
+
+sos41 := proc(expr) 
+	local A, B, C, D, E, f, temp, var, a, b, c; 
+	var := indets(expr); 
+	a := var[1]; 
+	b := var[2]; 
+	c := var[3]; 
+	f := expr - sgm((a^2*m[1] + a*b*m[4] + a*c*m[6] + b^2*m[2] + b*c*m[5] + c^2*m[3])^2); 
+	A := coeff(collect(subs({a = a, b = 1, c = 0}, f), a), a^4); 
+	B := coeff(collect(subs({a = a, b = 1, c = 0}, f), a), a^3); 
+	C := coeff(collect(subs({a = a, b = 1, c = 0}, f), a), a); 
+	D := coeff(collect(subs({a = a, b = 1, c = 0}, f), a), a^2); 
+	E := coeff(collect(subs({a = a, b = 1, c = 1}, f), a), a^2) - 2*D;
+	temp := solve({m[3] = 0, A = 0, B = 0, C = 0, D = 0, E = 0}); 
+	subs(sgm(factor(subs(temp, (a^2*m[1] + a*b*m[4] + a*c*m[6] + b^2*m[2] + b*c*m[5] + c^2*m[3])^2)))); 
+end proc:
+
+sos42 := proc(expr) 
+	local A, B, C, D, E, f, temp, var, a, b, c; 
+	var := indets(expr); 
+	a := var[1]; 
+	b := var[2]; 
+	c := var[3]; 
+	f := expr - sgm((a^2*m[1] + a*b*m[4] + a*c*m[6] + b^2*m[2] + b*c*m[5] + c^2*m[3])^2); 
+	A := coeff(collect(subs({a = a, b = 1, c = 0}, f), a), a^4); 
+	B := coeff(collect(subs({a = a, b = 1, c = 0}, f), a), a^3); 
+	C := coeff(collect(subs({a = a, b = 1, c = 0}, f), a), a); 
+	D := coeff(collect(subs({a = a, b = 1, c = 0}, f), a), a^2); 
+	E := coeff(collect(subs({a = a, b = 1, c = 1}, f), a), a^2) - 2*D;
+	temp := solve({m[4] = 0, A = 0, B = 0, C = 0, D = 0, E = 0}); 
+	subs(sgm(factor(subs(temp, (a^2*m[1] + a*b*m[4] + a*c*m[6] + b^2*m[2] + b*c*m[5] + c^2*m[3])^2)))); 
+end proc:
+
+bw := proc (expr) 
+	local f, sj; 
+	sj:=time[real](); 
+	f := expr;  
+	if type(f, symmfunc(a, b, c)) = true then 
+		print(`This expression is symmetric`); 
+		print(`a&ge;b&ge;c then substitute a = c+x+y, b = c+x gives`); 
+		print(collect(subs({a = c+x+y, b = c+x, c = c}, numer(f)), c, factor)/denom(f)) 
+	else print(`This expression is not symmetric`); 
+		print(`a&ge;b&ge;c then substitute a = c+x+y, b = c+x gives`); 
+		print(collect(subs({a = c+x+y, b = c+x, c = c}, numer(f)), c, factor)/denom(f)); 
+		print(`b&ge;a&ge;c then substitute a = c+x, b = c+x+y gives`); 
+		print(collect(subs({a = c+x, b = c+x+y, c = c}, numer(f)), c, factor)/denom(f)) 
+	fi; 
+	print(`c = min{a,b,c} then substitute a = c+x, b = c+y gives`); 
+	print(collect(subs({a = c+x, b = c+y, c = c}, numer(f)), c, factor)/denom(f)); 
+	print(`Time is`); print(time[real]()-sj);
+end proc:
+
+sdt := proc (deg, a, b, t) 
+	local i; 
+	sum(m[i+t]*a^(deg-i)*b^i, i = 0 .. deg) 
+end proc: 
+
+sdt2 := proc (deg, a, b, t) 
+	local i, j, hangtu; 
+	if deg = 0 then 
+		return m[t] 
+	else hangtu := m[t]; 
+		for i to deg do 
+			hangtu := hangtu+sdt(i, a, b, t + sum(j, j = 0 .. i)) 
+		end do 
+	end if 
+end proc: 
+
+giv := proc (deg, a, b, c, t) 
+	local f; 
+	f := sdt2(deg, a, b, t); 
+	numer(subs({a = a/c, b = b/c}, f)) 
+end proc:
+
+pqr := proc (expr) 
+	local var, temp1, temp2, a, b, c, f, g, temp3, temp4; 
+	var := indets(expr); 
+	a := var[1]; 
+	b := var[2]; 
+	c := var[3]; 
+	f := numer(expr); 
+	g := denom(expr); 
+	temp1 := convert(f*(a+b+c)^3, elsymfun); 
+	temp2 := subs({a*b+c*a+b*c = q, a+b+c = p, c = r/(a*b)}, temp1); 
+	temp3 := convert(g*(a+b+c)^3, elsymfun); 
+	temp4 := subs({a*b+c*a+b*c = q, a+b+c = p, c = r/(a*b)}, temp3); 
+	factor(temp2/temp4) 
+end proc:
+
+facE := proc (expr)
+	local tmp, f, ff, dd, i;
+	if type(expr, `*`) = true then
+		return expr
+	else
+		tmp := 0;
+		f := 0;
+		ff := [];
+		dd := convert(expr, list);
+		for i to nops(dd) do
+			if factor(op(i,dd) - numer(expr)) = 0 then
+				f := op(i,dd);
+				ff := convert(f, list);
+			fi
+		od;
+		if f = 0 then	
+		for i to nops(dd) do
+			tmp := tmp + factor(op(i,dd))
+		od
+		else for i to nops(ff) do
+			tmp := tmp + factor(op(i,ff)/denom(expr))
+			od;
+		fi;
+		if evalb(factor(expr) = expr) = true then 
+			return expr
+		else return tmp;
+		fi;
+	fi;
+end:
+
+gmat := proc (e::(algebraic = algebraic)) 
+	local var, a, b, c, f, g, i, s, h, d; 
+	f := numer(lhs(e)); 
+	g := numer(rhs(e)); 
+	var := indets(f); 
+	a := var[1]; 
+	b := var[2]; 
+	c := var[3]; 
+	match(subs({a = a, b = 1, c = 1}, f) = subs({a = a, b = 1, c = 1}, g), a, s[1]); 
+	match(subs({a = a, b = 1, c = 0}, f) = subs({a = a, b = 1, c = 0}, g), a, s[2]); 
+	match(subs({a = a, b = 0, c = 1}, f) = subs({a = a, b = 0, c = 1}, g), a, s[3]); 
+	match(subs({a = 1, b = b, c = 1}, f) = subs({a = 1, b = b, c = 1}, g), b, s[4]); 
+	match(subs({a = 0, b = b, c = 1}, f) = subs({a = 0, b = b, c = 1}, g), b, s[5]); 
+	match(subs({a = 1, b = b, c = 0}, f) = subs({a = 1, b = b, c = 0}, g), b, s[6]); 
+	match(subs({a = 1, b = 1, c = c}, f) = subs({a = 1, b = 1, c = c}, g), c, s[7]); 
+	match(subs({a = 0, b = 1, c = c}, f) = subs({a = 0, b = 1, c = c}, g), c, s[8]); 
+	match(subs({a = 1, b = 0, c = c}, f) = subs({a = 1, b = 0, c = c}, g), c, s[9]); 
+	h := `union`(s[1], s[2], s[3], s[4], s[5], s[6], s[7], s[8], s[9], s[10]); 
+	d := convert(h, list); op(nops(d), d) 
+end proc:
+
+nsos4 := proc (expr) 
+	local var, f, g, h, X, Y, i, j, a, b, c ; 
+	var := indets(expr); 
+	a := var[1]; 
+	b := var[2]; 
+	c := var[3]; 
+	f := expr; 
+	g := collect(subs({a = a+d, b = b+d, c = c+d}, f), d, factor); 
+	h := collect(g-f, d, factor); 
+	if h = 0 then 
+		print(g) 
+	else X := coeff(h, d, 2); 
+		Y := coeff(h, d, 1); 
+		i := factor(subs({d = -(1/2)*Y/X}, g)); 
+		j := factor(f-i); 
+		if degree(f) = 4 then 
+			i+j 
+		else return {} 
+		end if 
+	end if 
+end proc:
+
+gss3 := proc (expr) 
+	local var, a, b, c, g, f, i; 
+	var := indets(expr); 
+	f := expr; 
+	a := var[1]; 
+	b := var[2]; 
+	c := var[3]; 
+	g[1] := giv(1, a, b, c, 1)*(a-b)^2+giv(1, a, b, c, 4)*(a-c)*(b-c); 
+	g[2] := giv(1, a, b, c, 1)*(a+b-2*c)^2+giv(1, a, b, c, 4)*(a-c)*(b-c); 
+	g[3] := giv(1, a, b, c, 1)*(sgm(a^2)-sgm(a*b))+giv(1, a, b, c, 4)*(a-c)*(b-c); 
+	g[4] := giv(1, a, b, c, 1)*(a-2*b+c)^2+giv(1, a, b, c, 4)*(a-b)*(b-c); 
+	g[5] := giv(1, a, b, c, 1)*(sgm(a^2)-sgm(a*b))+giv(1, a, b, c, 4)*(a-b)*(b-c); 
+	g[6] := giv(1, a, b, c, 1)*(a-c)^2+giv(1, a, b, c, 4)*(a-b)*(b-c); 
+	g[7] := giv(1, a, b, c, 1)*(a+b-2*c)^2+giv(1, a, b, c, 4)*(sgm(a^2)-sgm(a*b)); 
+	g[8] := giv(1, a, b, c, 1)*(a-2*b+c)^2+giv(1, a, b, c, 4)*(sgm(a^2)-sgm(a*b)); 
+	g[9] := giv(1, a, b, c, 1)*(b+c-2*a)^2+giv(1, a, b, c, 4)*(sgm(a^2)-sgm(a*b)); 
+	for i to 9 do 
+		print(subs(solve(gget(f = g[i],[a,b,c])), g[i])) 
+	end do 
+end proc:
+
+cpqr := proc (expr) 
+	local f, g, var, a, b, c, h; 
+	f := numer(expr); 
+	var := indets(f); 
+	a := var[1]; 
+	b := var[2]; 
+	c := var[3]; 
+	g:= subs({a = c, b = b, c = a}, f); 
+	(1/2)*pqr(f+g)+(1/2)*pqr(factor((f-g)/((a-b)*(b-c)*(c-a))))*pro(a-b) 
+end proc:
+
+creR := proc (t) 
+	local i, tmp, d; 
+	d := {sgm(a^2-a*b)^2} union convcyclicset((a-b)^2*(a+b-3*c)^2, (2*a^2-b^2-c^2+2*b*c-a*c-a*b)^2, (2*a-b)^4, (a-2*b)^4, (a^2-2*a*c+b*c)^2, (a^2-2*a*b+b*c)^2, (a^2-b*c)^2, a^2*(a-b)^2, b^2*(a-b)^2, (a-2*b)^2*(a+b-2*c)^2, (2*a-b)^2*(a+b-2*c)^2, (a-b)^2*(a+b-c)^2, (a-b)^2*(a-2*b)^2, (a-b)^2*(2*a-b)^2, (2*a-b-c)^4, (a-b)^4, (a-b)^2*(b-c)^2, c^2*(a-b)^2, (a^2-b^2)^2, (a*b-2*a*c+b*c)^2, (a^2-a*c+b^2-b*c)^2, (a-b)^2*(a+b-2*c)^2, (a-b)^2*(b-2*c)^2, (a-b)^2*(2*b-c)^2); 
+	tmp := 0; 
+	for i to nops(d) do 
+		tmp := tmp+m[i + t]*op(i, d) 
+	end do;
+	return tmp;
+end proc:
+
+creD := proc (t) 
+	local i, tmp, d; 
+	d := convcyclicset(a*b*(a+b-2*c)^2, a*c*(a+b-2*c)^2, b*c*(a+b-2*c)^2, a*c*(a-b)^2, a*b*(a-b)^2, b*c*(a-b)^2); 
+	tmp := 0; 
+	for i to nops(d) do 
+		tmp := tmp+m[i + t]*op(i, d) 
+	end do;
+	return tmp;
+end proc:
+
+CS := proc (expr) 
+	local var, a, b, c, f, g, h, i, d, k, l; 
+	f := expr; 
+	var := indets(f); 
+	a := var[1]; 
+	b := var[2]; 
+	c := var[3]; 
+	d := convert(f, list); 
+	for i to nops(d) do 
+		g[i] := numer(op(i, d)); 
+		h[i] := denom(op(i, d)) 
+	end do; 
+	k := 0; 
+	l := 0; 
+	for i to nops(d) do 
+		k := k+g[i] 
+	end do; 
+	for i to nops(d) do 
+		l := l+g[i]*h[i] 
+	end do; 
+	print(`By Cauchy-Schwarz we obtain`); 
+	k^2/l 
+end proc:
+
+ravi := proc (expr) 
+	local f, var, a, b, c, g; 
+	f := expr; 
+	var := indets(f); 
+	a := var[1]; 
+	b := var[2]; 
+	c := var[3]; 
+	g := subs({a = y+z, b = z+x, c = x+y}, f); 
+	subs({x = a, y = b, z = c}, g) 
+end proc:
+
+prove4 := proc (ineq) 
+	local exp, i, sj, ff, tt, ff1, g, f; 
+	if whattype(ineq) = `=` then 
+		print(`This is not an inequality!`) 
+	else g := rhs(ineq)-lhs(ineq); 
+		f := convert(g, `+`); 
+		sj := time(); 
+		exp := {}; 
+		tt := 0; 
+		ff1 := unapply(f, a, b, c); 
+		for i from 2 to nops([op(expand(numer(f)))]) do 
+			if degree([op(expand(numer(f)))][i]/subs(a = 1, b = 1, c = 1, [op(expand(numer(f)))][i])) <> degree([op(expand(numer(f)))][1]/subs(a = 1, b = 1, c = 1, [op(expand(numer(f)))][1])) then 
+				tt := tt+1 
+			end if 
+		end do; 
+		if 0 < tt then print(`ERROR, this polynomial is not homonegeous!`); 
+			print(`ERROR,This form is not circle symmetric!`) 
+		elif tt = 0 and nops(expand({ff1(a, b, c), ff1(b, c, a), ff1(c, a, b)})) = 1 then 
+			if type(f, symmfunc(a, b, c)) then 
+				print(`This is a symmetric polynomial!`); 
+				check1(ineq) 
+			else print(`This is a cyclic symmetric polynomial!`); 
+				check2(ineq) 
+			end if 
+		end if 
+	end if 
+end proc: 
+
+solve01 := proc (ff1) 
+	local m, n, p, g, gg, k, l; 
+	m := coeff(subs({a = a, b = 1, c = 1}, ff1), a^4); 
+	n := coeff(subs({a = a, b = 1, c = 0}, ff1), a^2); 
+	p := coeff(subs({a = a, b = 1, c = 0}, ff1), a^3); 
+	g := coeff(subs({a = a, b = 0, c = 1}, ff1), a^3); 
+	if subs({a = a, b = a, c = a}, ff1) = 0 and 0 <= 3*m*(m+n)-p^2-p*g-g^2 and 0 < m and p^2+p*g+g^2 <> 0 then 
+		gg := facE(sgm((1/18)*(3*m*(a^2-b^2)+(p-g)*a*b-(2*p+g)*b*c+(p+2*g)*c*a)^2/m)+sgm(((1/6)*m*(m+n)-(1/18)*p^2-(1/18)*p*g-(1/18)*g^2)*((p-g)*a*b-(2*p+g)*b*c+(p+2*g)*c*a)^2/(m*(p^2+p*g+g^2)))) 
+	elif subs({a = a, b = a, c = a}, ff1) = 0 and 0 < m and p = 0 and g = 0 then 
+		k := facE((1/2)*m*sgm((a^2-b^2)^2)+((1/2)*m+(1/2)*n)*sgm(c^2*(a-b)^2)) 
+	elif subs({a = a, b = a, c = a}, ff1) = 0 and m = 0 then 
+		l := facE((1/2)*sgm(c*(a-b)^2*(n*c+2*p*b+2*g*a))) 
+	else return {}
+	end if 
+end proc: 
+
+solve02 := proc (ff1) 
+	local k, l, o, ff7, ff6, Mm, i, j, gg; 
+	ff7 := sgm((k*a+l*b+o*c)^4); 
+	Mm := solve(subs(a = 1, b = 1, c = 1, {op(collect(ff1-ff7, [a, b, c], distributed))}), {k, l, o}); 
+	gg := remove(hastype, {Mm}, {And(complexcons, Not(realcons)), specfunc(anything, RootOf)}); 
+	if gg <> {} then 
+		subs(gg[1], ff7) 
+	else return {}
+	end if 
+end proc: 
+
+solve03 := proc (ff2) 
+	local m1, m2, m3, m4, m5, deg2, g, amu4, amu3b, amu3c, amu2bmu2, amu2bc, gg; 
+	m1 := simplify(coeff(subs({a = a, b = 1, c = 1}, ff2), a^4)); 
+	m2 := simplify(coeff(subs({a = a, b = 1, c = 0}, ff2), a^2)); 
+	m3 := simplify(coeff(subs({a = a, b = 1, c = 0}, ff2), a^3)); 
+	m4 := simplify(coeff(subs({a = a, b = 0, c = 1}, ff2), a^3)); 
+	m5 := simplify(coeff(subs({a = a, b = 1, c = 1}, ff2), a^2)-2*m2); 
+	amu4 := x^2+y^2+z^2; 
+	amu3b := 2*m*x+2*n*y+2*p*z; 
+	amu3c := 2*m*y+2*n*z+2*p*x; 
+	amu2bmu2 := m^2+n^2+p^2+2*x*y+2*x*z+2*y*z; 
+	amu2bc := 2*m*n+2*m*p+2*m*z+2*n*p+2*n*x+2*p*y; 
+	g := sgm((a^2*x+a*b*m+a*c*p+b^2*y+b*c*n+c^2*z)^2); 
+	deg2 := solve({x = 1, amu4 = m1, amu3b = m3, amu3c = m4, amu2bmu2 = m2, amu2bc = m5}, {m, n, p, x, y, z}); 
+	gg := remove(hastype, {deg2}, {And(complexcons, Not(realcons)), specfunc(anything, RootOf)}); 
+	if gg <> {} then 
+		subs(gg[1], g) 
+	else return {}
+	end if 
+end proc: 
+
+solve04 := proc (ff) 
+	local k, l, ff7, ff5, Mm, gg; 
+	ff7 := k*(sgm(a^2)-l*sgm(a*b))^2; 
+	Mm := solve(subs(a = 1, b = 1, c = 1, {op(collect(ff-ff7, [a, b, c], distributed))}), {k, l}); 
+	gg := remove(hastype, {Mm}, {And(complexcons, Not(realcons)), specfunc(anything, RootOf)}); 
+	if gg <> {} then 
+		subs(gg[1], ff7) 
+	else return {}
+	end if 
+end proc: 
+
+solve05 := proc (expr) 
+	local f, g, h, X, Y, i, j, x, y, z, t; 
+	f := expr; 
+	g := collect(subs({a = a+d, b = b+d, c = c+d}, f), d, factor); 
+	h := collect(g-f, d, factor); 
+	if h = 0 then 
+		print(g) 
+	else X := coeff(h, d, 2); 
+		Y := coeff(h, d, 1); 
+		i := factor(subs({d = -(1/2)*Y/X}, g)); 
+		j := factor(f-i); x := convert(i*1000000, list); 
+		y := op(2, x); z := convert(y, list); 
+		t := op(2, z); 
+		if t = 2 then 
+			i+j 
+		else return {}
+		end if 
+	end if 
+end proc:
+
+check1 := proc (ineq) 
+	local ff1; 
+	ff1 := convert(rhs(ineq)-lhs(ineq), `+`); 
+	if solve(0 <= subs(b = 1, c = 1, ff1), a) = a and solve(0 <= subs(b = 0, c = 0, ff1), a) = a then 
+		print(`This inequality is true! Try to solving: `); 
+		print(solve01(ff1)); 
+		print(solve02(ff1)); 
+		print(solve03(ff1)); 
+		print(solve04(ff1)); 
+		print(solve05(ff1)) 
+	else print(`This inequality is false!`) 
+	end if 
+end proc: 
+
+check2 := proc (ineq) 
+	local m, r, p, q, s, ff2, ff1; 
+	ff1 := convert(rhs(ineq)-lhs(ineq), `+`); 
+	m := coeff(subs({a = a, b = 1, c = 1}, ff1), a^4); 
+	ff2 := expand(ff1/m); 
+	r := coeff(subs({a = a, b = 1, c = 0}, ff2), a^2); 
+	p := -coeff(subs({a = a, b = 1, c = 0}, ff2), a^3); 
+	q := -coeff(subs({a = a, b = 0, c = 1}, ff2), a^3); 
+	s := simplify(coeff(subs({a = a, b = 1, c = 1}, ff2), a^2)-2*r); 
+	if p+q-r-1 <= s and s <= 2*r+2+p+q-p^2-p*q-q^2 then 
+		print(`This inequality is true! Try to solving:`); 
+		print(solve01(ff1)); 
+		print(solve02(ff1)); 
+		print(solve03(ff1)); 
+		print(solve04(ff1)); 
+		print(solve05(ff1));
+	else print(`This inequality is false!`) 
+	end if 
+end proc:
+
+msos4 := proc (expr) 
+	local f, var, a, b, c; 
+	f := expr; 
+	var := indets(f); 
+	a := var[1]; 
+	b := var[2]; 
+	c := var[3]; 
+	if degree(f) <> 4 then 
+		print(`Degree&ne;4. False`) 
+	else print(solve01(f)); 
+		print(solve05(f)) 
+	end if 
+end proc:
+
+homo := proc (expr) 
+	local var, a, b, c, f, g; 
+	f := expr; 
+	var := indets(f); 
+	a := var[1]; 
+	b := var[2]; 
+	c := var[3]; 
+	g := factor(subs({a = t*a, b = t*b, c = t*c}, f)); 
+	evalb(degree(f) = degree(op(2, convert(100000*g, list)))) 
+end proc:
+
+mnsos4 := proc (expr) 
+	local ff, f, var, a, b, c, x, y, z, t, v; 
+	f := expr; 
+	var := indets(f); 
+	a := var[1]; 
+	b := var[2]; 
+	c := var[3]; 
+	x := coeff(subs({a = a, b = 1, c = 1}, f), a^4); 
+	z := coeff(subs({a = a, b = 1, c = 0}, f), a^2); 
+	y := coeff(subs({a = a, b = 1, c = 0}, f), a^3); 
+	t := coeff(subs({a = a, b = 0, c = 1}, f), a^3); 
+	v := coeff(subs({a = a, b = 1, c = 1}, f), a^2)-2*z; 
+	if x+y+z+t+v <> 0 then 
+		ff := f-((1/27)*x+(1/27)*y+(1/27)*z+(1/27)*t+(1/27)*v)*sgm(a)^4; 
+		solve01(ff)+((1/27)*x+(1/27)*y+(1/27)*z+(1/27)*t+(1/27)*v)*sgm(a)^4 
+	else solve01(f) 
+	end if 
+end proc:
+
+ksos5 := proc (expr) 
+	local f, g, d, ef, vg; 
+	g := sgm(a*giv(2, a, b, c, 1)^2); 
+	f := numer(expr); 
+	d := solve(gget(f = g, [a,b,c])); 
+	if d = NULL then 
+		return {} 
+	else 
+		if nops({d}) > 1 then
+			ef := d[1];
+			if nops({allvalues(ef)}) > 1 then
+				vg := allvalues(ef)[1];
+				if type(rhs(op(1, vg)), complex) = true then
+					return {}
+				fi;
+			else facE(subs(allvalues(ef), g))/denom(expr)
+			fi;
+		else facE(subs(d, g))/denom(expr)
+		fi;
+	end if 
+end proc:
+
+schur := proc (d::list, i) 
+	local var, a, b, c; 
+	a := d[1];
+	b := d[2];
+	c := d[3];
+	if nops(d) <> 3 or i <= 2 then 
+		return false 
+	else	return factor(sgm(a^(i-2)*(a-b)*(a-c))) 
+	end if 
+end proc:
+
+nsos3 := proc (expr) 
+	local f, g; 
+	f := numer(expr); 
+	g := f*(sgm(a^2)-sgm(a*b)); 
+	if homo(f) = true and degree(f) = 3 then 
+		if ksos5(g) = {} then 
+			{} 
+		else ksos5(g)/(denom(expr)*(sgm(a^2)-sgm(a*b))) 
+		end if 
+	else return {} 
+	end if 
+end proc:
+
+per := proc (X::list, Y::list) 
+	local i, tmp; 
+	tmp := 0; 
+	for i to nops(X) do 
+		tmp := tmp + op(i, X)*op(i, Y) 
+	end do 
+end proc:
+
+Rearrangement := proc (X::list, Y::list, f, more) 
+	local i, tmp, d, u, D, P, DD; 
+	d := combinat:-permute(Y);
+	for i to nops(d) do 
+		u[i] := op(i, d) 
+	end do;
+	P := {};
+	for i from 2 to nops(d)-1 do 
+		P := `union`(P, {per(X, u[i]) <= per(X, u[1])}) 
+	end do;
+	DD := {}; 
+	for i from 2 to nops(d)-1 do 
+		DD := `union`(DD, {per(X, u[nops(d)]) <= per(X, u[i])}) 
+	end do;
+	D := `union`(P, DD);
+	if f <> 0 then 
+		for i to nops(D) do 
+			if expand(rhs(D[i])-f) = 0 or expand(lhs(D[i])-f) = 0 then 
+				print(D[i]+more) 
+			end if 
+		end do 
+	elif f = 0 then 
+		for i to nops(D) do 
+			print(D[i]+more) 
+		end do 
+	end if 
+end proc:
+
+timnghiemkoam := proc () 
+	local sol, sol1, sol2, k, sls, j, i, X, l; X := _passed; 
+	if X <> NULL then 
+		sol := solve(X); 
+		if sol = NULL then 
+			return {} 
+		else sls:={}; 
+			sol1 := map(proc (t) options operator, arrow; 0 <= t end proc, indets(X)); 
+			sol2 := `union`(sol, sol1); k := solve(sol2); 
+			if k=NULL then 
+				return {} 
+			else if nops(convert({k},list)) = 1 then 
+				l := k;
+				else l := k[1] 
+				fi;
+				for i to nops(l) do 
+					if type(op(i, l), '`<=`') = true then 
+						sls := `union`(sls, {op(i, l)}) 
+					end if 
+				end do ;
+				if sls={} then 
+					return k; 
+				else j:={lhs(op(1,sls))=rhs(op(1,sls))}; solve(l union j) 
+				fi;
+			fi; 
+		fi 
+	fi 
+end proc:
+
+ksos4 := proc (expr) 
+	local i, j, f, g, h, sol; 
+	f := numer(expr); 
+	g := sgm(giv(2, a, b, c, 1)*(a-b)^2); 
+	h := sgm(giv(2, a, b, c, 1)*(a+b-2*c)^2); 
+	sol[1] := gsolve(gget(f = g,[a,b,c])); 
+	sol[2] := gsolve(gget(f = h,[a,b,c])); 
+	if homo(f) = false or degree(f) <> 4 then 
+		NULL 
+	else if sol[1] <> {} then 
+		subs(sol[1], g) 
+		elif sol[2] <> {} then 
+			subs(sol[2], h) 
+		else NULL 
+		end if 
+	end if 
+end proc:
+
+gget := proc (e::(algebraic = algebraic), X::list) 
+	local f, g, d, sol, sols, sls, i, mo, no, s; 
+	no := nops(X); 
+	sols := {}; 
+	f := numer(factor(lhs(e)));
+	g := numer(factor(rhs(e))); 
+	d := map(proc (t) options operator, arrow; t = 1 end proc, X); 
+	sol := subs(d, {op(collect(f - g, X, distributed))}); 
+	if no = 1 and match(f = g, op(X), s) = true then 
+		return s 
+	elif no = 1 and match(f = g, op(X), s) = false then 
+		return {} 
+	else for i to nops(sol) do 
+		mo[i] := {op(i, sol) = 0} 
+		end do; 
+		for i to nops(sol) do 
+			sols := `union`(sols, mo[i]) 
+		end do; 
+		return sols 
+	end if 
+end proc:
+
+fsos := proc ()
+	local tmp, f, t, var, a, b, c, sol, sls, sbs, svs1, svs2, sol1, sol2, s1, s2, koa, expr;
+	expr := args;
+	if expr = 0 or expr = NULL then 
+		return 0
+	else
+		var := indets(expr);
+		a := var[1];
+		b := var[2];
+		c := var[3];
+		f := numer(expr);
+		t := degree(f);
+		if type(f, symmfunc(a, b, c)) = false then 
+			tmp := sgm(poly([a,b,c] ,t-2, 0)*(a-b)^2);
+		else tmp := sgm(poly([a,b,c] ,t-2, 0, sym(c))*(a-b)^2);
+		fi;
+		sol := solve(gget(f = tmp,[a,b,c]));
+		koa := jjsolve(sol);
+		if koa <> {} then 
+			return facE(subs(koa, tmp))/denom(expr)
+		else if sol <> NULL then
+				sls := map(t -> t=t, indets(sol));
+				sbs := sls intersect sol;
+				svs1 := map(t -> t=1, indets(sbs));
+				svs2 := map(t -> t=0, indets(sbs));
+				sol1 := solve(svs1 union sol);
+				sol2 := solve(svs2 union sol);
+				s1 := facE(subs(sol1, tmp))/denom(expr);
+				s2 := facE(subs(sol2, tmp))/denom(expr);
+				if sol1 = NULL then s1 := NULL fi;
+				if sol2 = NULL then s2 := NULL fi;
+				if s1 = s2 then s2 := NULL fi;
+				s1, s2;
+			else return {}
+			fi;
+		fi;
+	fi;
+end:
+
+lsolve := proc () 
+	local eqs, var, sol, sls, svs, ro, sols, roll, solss; 
+	eqs := args; 
+	roll := rand(0..1);
+	if eqs = NULL then 
+		return {} 
+	else	sol := solve(eqs); 
+		var := indets(sol); 
+		sls := map(t->t=t,var); 
+		svs := sol intersect sls; 
+		ro := map(t->t=1,indets(svs)); 
+		sols := timnghiemkoam(sol union ro);
+		if sols = {} then 
+			ro := map(t->t=0,indets(svs)); 
+			solss := timnghiemkoam(sol union ro); 
+			if solss = {} then 
+				ro := map(t->t=roll(),indets(svs)); 
+				timnghiemkoam(sol union ro) 
+			else solss 
+			fi; 
+		else	sols
+		fi;
+	fi;
+end:
+
+nghiemchuan := proc () 
+	local eqs, sol, i, t; 
+	t := 0; 
+	eqs := args; 
+	if eqs = NULL or eqs = 0 then 
+		return false 
+	else sol := solve(eqs); 
+		if sol = NULL then 
+			return false 
+		else for i to nops(sol) do 
+			t := t + nops(indets(op(i, sol))) 
+			end do; 
+			if nops(sol) < t then 
+				return false 
+			else return true 
+			end if 
+		end if 
+	end if
+end proc:
+
+psolve := proc () 
+	local eqs, sol, i; 
+	eqs := args; 
+	if eqs = NULL or eqs = 0 then 
+		return {} 
+	else sol := solve(eqs); 
+		for i to nops(indets(sol)) while nghiemchuan(sol) = false do 
+			if timnghiemkoam(`union`(sol, {op(i, indets(sol)) = 1})) = {} then 
+				sol := timnghiemkoam(`union`(sol, {op(i, indets(sol)) = 0})) 
+			else sol := timnghiemkoam(`union`(sol, {op(i, indets(sol)) = 1})) 
+			end if 
+		end do 
+	end if; 
+return sol 
+end proc:
+
+ktranghiemkoam := proc () 
+	local eqs, sol, i, j; 
+	eqs := args; 
+	j := 0;
+	if eqs = NULL or eqs = 0 then 
+		return false 
+	else sol := solve(eqs);
+		if nghiemchuan(sol) = false then 
+			return false 
+		else for i to nops(eqs) do 
+			if evalb(rhs(op(i, eqs)) < 0) = true then 
+				j := j+1 
+			end if 
+			end do; 
+			if j <> 0 then 
+				return false 
+				else return true 
+			end if
+		end if
+	end if;
+end proc:
+
+locnghiemam := proc () 
+	local eqs, sol, i, j, tmp; 
+	eqs := args; 
+	tmp := {};
+	if eqs = NULL or eqs = 0 then 
+		return {} 
+	else sol := solve(eqs); 
+		if nghiemchuan(sol) = false then 
+			return {} 
+		else for i to nops(sol) do 
+			if evalb(rhs(op(i,sol))<0) = true then 
+				tmp := tmp union {op(i,sol)} 
+			fi 
+			od
+		fi
+	fi;
+	return tmp;
+end proc:
+
+nonnegasolve := proc () 
+	local eqs, sol, sol1, sols, var, r1, r2, r3, r4; 
+	eqs := args;
+	if eqs = NULL or eqs = 0 then 
+		return {} 
+	else sol := solve(eqs); 
+		if sol = NULL then 
+			return {}
+		else var := indets(sol); 
+			r1 := map(t->t=t,var); 
+			sol1 := sol intersect r1;
+			r2 := map(t->t=0,indets(sol1)); 
+			sols := solve(sol union r2);
+			if ktranghiemkoam(sols) = false then 
+				r3 := locnghiemam(sols); 
+				r4 := map(t->t=0,indets(r3)); 
+				sol := solve(sol union r4); 
+				nonnegasolve(sol);
+			else return sols
+			fi
+		fi
+	fi
+end proc:
+
+lpsolve := proc () 
+	local eqs, sol, var, i; 
+	eqs := args;
+	if eqs = NULL or eqs = 0 then 
+		return {}
+	else sol := solve(eqs); var := indets(loop(sol)); 
+		if var = {} then 
+			return nonnegasolve(sol); 
+		else if nonnegasolve(sol) = {} then 
+			     if ktranghiemkoam(sol) = false then
+				     if nonnegasolve(sol union {op(1,var)=1}) <> {} then
+					     nonnegasolve(sol union {op(1,var)=1})
+					else sol := sol union {op(1,var)=0}; 
+					     lpsolve(sol); 
+					fi
+				else return sol
+				fi
+			else return nonnegasolve(sol)
+			fi 
+		fi
+	fi
+end proc:
+
+loop := proc ()
+	local sol, var, i, eqs, tmp;
+	eqs := args; tmp := {};
+	if eqs = NULL or eqs = 0 then
+		return {}
+	else sol := solve(eqs);
+		if sol = NULL then
+			return {} 
+		else for i to nops(sol) do 
+			if nops(indets(rhs(op(i, sol)))) <> 0 then 
+				tmp := tmp union {op(i, sol)}
+			fi 
+			od
+		fi
+	fi;
+	return tmp;
+end proc:
+
+cartprod := proc (A::set, B::set)
+	local tmp, i, j;
+	tmp := {};
+	for i to nops(A) do
+		for j to nops(B) do
+			tmp := tmp union {A[i] *B[j]}
+		od
+	od;
+	return tmp;
+end:
+
+setcoupleprod := proc (e::set)
+	local tmp, i, j;
+	tmp := {};
+	for i to nops(e) do
+		tmp := tmp union cartprod({op(i,e)}, e minus {op(i,e)})
+	od;
+	return tmp;
+end:
+
+convcyclicset := proc ()
+	local f, f1, f2, f3, tmp1, tmp, dd, i, sets;
+	sets := {};
+	tmp := args;
+	for i to nops({tmp}) do
+		tmp1 := sgm(op(i, {tmp})/NONE);
+		dd := convert(tmp1, set);
+		f1 := numer(op(1, dd));
+		f2 := numer(op(2, dd));
+		f3 := numer(op(3, dd));
+		f := {f1, f2, f3};
+		sets := sets union f;
+	od;
+	return sets;
+end:
+
+cresos4 := proc (expr, E)
+	local var, a, b, c, sol, sols, cre;
+	var := indets(expr);
+	a := var[1];
+	b := var[2];
+	c := var[3];
+	if E = R then 
+		cre := creR(0);
+	elif E = D then 
+		cre := creR(0) + creD(nops(creR(0)) + 1);
+	else return false
+	fi;
+	sol := solve(gget(expr = cre, [a, b, c]));
+	if sol = NULL then
+		return {}
+	else sols := gsolve(sol);
+		if sols = {} then
+			return {}
+		else facE(subs(sols, cre))
+		fi;
+	fi;
+end:
+
+degfill := proc (p, a)
+	local dd, i, tmp, deg, n;
+	dd := convert(p ,list);
+	if a = 1 then
+		return 1
+	elif evalb(op(indets(a)) in indets(dd)) = false then
+		error "1st argument, %1, invalid input polynomial", p;
+	else if nops(indets(a)) <> 1 then
+			error "2nd argument, %1, is not a single variable", a;
+		else n := degree(a);
+			for i to nops(dd) do
+				if degree(op(i, dd), op(indets(a))) = n then
+					tmp := op(i, dd)
+				fi;
+			od;
+			return tmp;
+		fi;
+	fi;
+end:
+
+sympol2 := proc(a, b, deg, t)
+	local dd, tmp, i, ls, tp;
+	tmp := {};
+	dd := 0;
+	if deg = 0 then
+		return m[t]
+	else 
+		for i from 0 to deg do 
+			dd := dd + a^i*b^(deg-i)
+		od;
+		for i from 1 to deg do 
+			tmp := tmp union {degfill(dd, a^i) + degfill(dd, b^i)}
+		od;
+		if is(deg/2, integer) = true then
+			ls := 0;
+			for i to nops(tmp) do 
+				ls := ls + op(i,tmp)
+			od;
+			tmp := (tmp minus {degfill(ls, a^(deg/2))}) union {degfill(ls, a^(deg/2))/2}
+		fi;
+		tp := 0;
+		for i to nops(tmp) do 
+			tp := tp +m[i + t]*op(i,tmp)
+		od;
+		return tp;
+	fi;
+end:
+
+poly := proc (e, deg, t, opt)
+	local tmp, a, b, c, i, ls, j;
+	ls := 0;
+	tmp := 0;
+	if type(e, list) = false and type(e, set) = false and nops(e) = 1 then
+		for i from 0 to deg do
+			tmp := tmp + m[i + t]*e^i
+		od;
+	else 
+		if nops(e) = 2 then 
+			a := op(1, e);
+			b := op(2, e);
+			if _params['opt'] = NULL then 
+				for i from 0 to deg do 
+					tmp := tmp +m[i + t]*a^i*b^(deg - i)
+				od;
+				return tmp;
+			elif _params['opt'] = sym then
+				factor(sympol2(a, b, deg, t))
+			else error "4th argument, %1, invalid option", opt;
+			fi;
+		elif nops(e) = 3 then 
+			a := op(1, e);
+			b := op(2, e);
+			c := op(3, e);
+			if _params['opt'] = sym(c) then
+				for i from 0 to deg do
+					ls := ls + c^i
+				od;
+				for i to deg do 
+					tmp := tmp + degfill(ls, c^(deg-i))*sympol2(a, b, i, t + nops(indets(tmp) minus {a, b, c})) 
+				od;
+				return tmp + m[nops(indets(tmp) minus {a, b, c}) + t + 1]*c^deg;
+			elif _params['opt'] = sym(b) then
+				for i from 0 to deg do
+					ls := ls + b^i
+				od;
+				for i to deg do 
+					tmp := tmp + degfill(ls, b^(deg-i))*sympol2(a, c, i, t + nops(indets(tmp) minus {a, b, c})) 
+				od;
+				return tmp + m[nops(indets(tmp) minus {a, b, c}) + t + 1]*b^deg;
+			elif _params['opt'] = sym(a) then
+				for i from 0 to deg do
+					ls := ls + a^i
+				od;
+				for i to deg do 
+					tmp := tmp + degfill(ls, a^(deg-i))*sympol2(c, b, i, t + nops(indets(tmp) minus {a, b, c})) 
+				od;
+				return tmp + m[nops(indets(tmp) minus {a, b, c}) + t + 1]*a^deg;
+			elif _params['opt'] = NULL then
+				for i from 0 to deg do 
+					tmp := tmp + c^i*sdt(deg-i, a, b,t + sum(j, j = 0 .. deg-i)) 
+				od;
+				return factor(tmp);
+			else error "4th argument, %1, invalid option", opt;
+			fi;
+		else error "1st argument, %1, invalid input", e;
+		fi;
+	fi;
+end:
+
+ss := proc (expression)
+	local gg, sol, var, a, b, c, tt, sols, sls, sbs, sol1, sol2, svs1, svs2, s1, s2, deg, expr;
+	expr := numer(expression);
+	deg := degree(expr);
+	var := indets(expr);
+	a := var[1];
+	b := var[2];
+	c := var[3];
+	tt := nops(expand(sgm(a)^(deg-2)));
+	if homo(expr) = false then
+		error "input polynomial , %1, is not homogeneous", expression;
+	else if type(expr, symmfunc(a, b, c)) = false then
+			gg := poly([a,b,c], deg-2, 0)*(a-b)^2 + poly([a,b,c], deg - 2, tt)*(a-c)*(b-c);
+			sol := solve(gget(expr = gg,[a,b,c]));
+			sols := gsolve(sol);
+			if sol = NULL then
+				return {}
+			else if sols = {} then
+					sls := map(t -> t = t, indets(sol)); 
+					sbs := sls intersect sol; 
+					svs1 := map(t -> t = 1, indets(sbs));
+					svs2 := map(t -> t = 0, indets(sbs)); 
+					sol1 := solve(sol union svs1);
+					sol2 := solve(sol union svs2);
+					s2 := facE(subs(sol2, gg)/denom(expression));
+					s1 := facE(subs(sol1, gg)/denom(expression));
+					if sol1 = NULL then s1 := NULL fi;
+					if sol2 = NULL then s2 := NULL fi;
+					if s1 = s2 then s1 := s2; s2 := NULL fi;
+					s1, s2;
+				else facE(subs(sols, gg)/denom(expression))
+				fi;
+			fi;
+		else gg := poly([a,b,c], deg-2, 0, sym(c))*(a-b)^2+poly([a,b,c], deg-2, tt, sym(c))*(a-c)*(b-c);
+			sol := solve(gget(expr = gg,[a,b,c]));
+			sols := gsolve(sol);
+			if sol = NULL then
+				return {}
+			else if sols = {} then
+					sls := map(t -> t = t, indets(sol)); 
+					sbs := sls intersect sol; 
+					svs1 := map(t -> t = 1, indets(sbs));
+					svs2 := map(t -> t = 0, indets(sbs)); 
+					sol1 := solve(sol union svs1);
+					sol2 := solve(sol union svs2);
+					s2 := facE(subs(sol2, gg)/denom(expression));
+					s1 := facE(subs(sol1, gg)/denom(expression));
+					if sol1 = NULL then s1 := NULL fi;
+					if sol2 = NULL then s2 := NULL fi;
+					if s1 = s2 then s1 := s2; s2 := NULL fi;
+					s1, s2;
+				else facE(subs(sols, gg)/denom(expression))
+				fi;
+			fi;
+		fi;
+	fi;
+end:
+
+addmv := proc (expr)
+	local tmp, var, a, b, c, tmp1, tmp2, tmp3, tmp4;
+	var := indets(expr);
+	a := var[1];
+	b := var[2];
+	c := var[3];
+	if denom(f) = 1 then 
+		tmp2 := factor(subs({a = a+c, b=b, c=0}, expr));
+		print(tmp2 + factor(expr - tmp2));
+	fi;
+	tmp := factor(subs({a = (a+b)/2, b = (a+b)/2, c = c}, expr));
+	print(tmp + factor(expr - tmp));
+	if type(expr, symmfunc(a,b,c)) = false then
+		tmp1 := factor(subs({a = a, b = (c+b)/2, c = (b+c)/2}, expr));
+		print(tmp1 + factor(expr - tmp1)); 
+	else return NULL;
+	fi;
+end:
+
+ksolve := proc (eqs, t)
+	local sol, tmp, var, hb, kin, mo, cin, i, me;
+	if eqs = NULL or eqs = 0 then
+		return {}
+	else sol := solve(eqs);
+		if sol = NULL then 
+			return {}
+		else var := indets(loop(sol));
+			if var = {} then
+				me := solve(sol);
+				if ktranghiemkoam(me) = true then
+					return me
+				else return {}
+				fi;
+			else
+				hb := here(sol, t);
+				if hb = {} then
+					return {}
+				else
+				tmp := {op(op(2, hb))};
+				cin := {}; 
+				for i to nops(tmp) do 
+					if evalb(rhs(op(i, tmp)) = 0.) = true then 
+						cin := `union`(cin, {op(i, tmp)}) 
+					end if 
+				end do;
+				kin := {}; 
+				for i to nops(cin) do 
+					kin := `union`(kin, {lhs(op(i, cin)) = 0}) 
+				end do;
+				gsolve(sol union kin)
+				fi;
+			fi;
+		fi;
+	fi;
+end:
+
+hbsolve := proc ()
+	local eqs, i, tmp, sol, varr;
+	eqs := args;
+	tmp := {};
+	if eqs = NULL or eqs = 0 then
+		return {}
+	else sol := solve(eqs);
+		if sol = NULL then 
+			return {}
+		else 
+			varr := indets(loop(sol));
+			if varr = {} then
+				if ktranghiemkoam(solve(sol)) = false then 
+					return {}
+				else return solve(sol)
+				fi;
+			else
+				for i to nops(varr) do
+					tmp := ksolve(sol, i);
+					if tmp <> {} then
+						return tmp;
+						break;
+					fi;
+				od;
+			fi;
+		fi;
+	fi;
+	return tmp;
+end:
+
+jjsolve := proc ()
+	local eqs, sol, var, hb1, hb2, tmp1, tmp2, cin1, cin2, kin1, kin2, kin, i;
+	eqs := args;
+	if eqs = NULL or eqs = 0 then
+		return {}
+	else sol := solve(eqs);
+		if sol = NULL then 
+			return {}
+		else var := indets(loop(sol));
+			if var = {} then 
+				if ktranghiemkoam(solve(sol)) = false then
+					return {}
+				else solve(sol)
+				fi;
+			else 
+			hb1 := here(sol, 1);
+			hb2 := here(sol, 2);
+			if hb1 = {} or hb2 = {} then 
+				return {}
+			else
+			tmp1 := {op(op(2, hb1))};
+			tmp2 := {op(op(2, hb2))};
+			cin1 := {};
+			cin2 := {};
+			kin1 := {};
+			kin2 := {};
+			for i to nops(tmp1) do 
+				if evalb(rhs(op(i, tmp1)) = 0.) = true then 
+					cin1 := cin1 union {op(i, tmp1)}
+				fi;
+			od;
+			for i to nops(cin1) do
+				kin1 := kin1 union {lhs(op(i, cin1)) = 0}
+			od;
+			for i to nops(tmp2) do 
+				if evalb(rhs(op(i, tmp2)) = 0.) = true then 
+					cin2 := cin2 union {op(i, tmp2)}
+				fi;
+			od;
+			for i to nops(cin2) do
+				kin2 := kin2 union {lhs(op(i, cin2)) = 0}
+			od;
+			kin := kin1 intersect kin2;
+			hbsolve(sol union kin);
+			fi;
+			fi;
+		fi;
+	fi;
+end:
+
+here := proc (eqs, t)
+	local var;
+	var := indets(loop(eqs));
+	try
+	Optimization:-LPSolve(op(t, var), eqs, assume = nonnegative)
+	catch "no feasible solution found":
+	{};
+	catch:
+	end try:
+	return %
+end:
+
+gsolve := proc ()
+	local eqs, sol, var, su, i, t;
+	eqs := args;
+	if eqs = NULL then 
+		return {}
+	else sol := solve(eqs);
+		if sol = NULL then
+			return {}
+		else var := indets(sol);
+			if nops(var) >= 5 then 
+				su := sum(op(i, var), i = 1..5)
+			else t := nops(var);
+				su := sum(op(i, var), i = 1..t)
+			fi;
+			simplex[minimize](su, sol, NONNEGATIVE)
+		fi;
+	fi;
+end:
+
+rinn := proc (f, xv::polynom)
+	local a, b, c, g, sol;
+	if nargs > 2 then 
+		error "unexpected 3rd arguments";
+	fi;
+	g := a*(xv+b)^2+c;
+	sol := solve(gget(op(1, indets(xv))*f=op(1, indets(xv))*g,[op(indets(xv))]));
+	if sol = NULL or sol = {} then 
+		return {}
+	else facE(subs(sol, g));
+	fi;
+end:
+
+ineqconvert := proc (ineq)
+	local tmp, i;
+	if type(ineq, `<=`) = false then
+		error "the input is not an inequality, %1", ineq;
+	else tmp := 0;
+		for i to nops(rhs(ineq)) do 
+			if evalb(subs({a = 1, b = 1, c = 1}, op(i, rhs(ineq))) < 0) = true then 
+				tmp := tmp + op(i, rhs(ineq)) 
+			end if 
+		end do; 
+		return factor(-tmp) <= factor(rhs(ineq)-tmp)
+	fi;
+end:
+
+pureprove := proc (expr, x)
+	local f, i, g, h, so1, so2, su1, su2, sj, mo, vv;
+	sj := time[real]();
+	mo := fsos(expr);
+	if mo <> {} then 
+		vv := lhs(ineqconvert(factor(op(1, op(1, {mo}))/(a-b)^2) >= 0));
+		if vv = 0 then
+			print(`We must prove`);
+			print(ineqconvert(expand(expr) >= 0));
+			print(`Please prove the followings`);
+			for i to nops(mo) do
+				print(ineqconvert(expand(op(i, mo)) >= 0 ))
+			od;
+		fi;
+	fi;
+	if mo = {} or vv <> 0 then
+	if degree(expr) = 4 then
+		if x = 1 then
+			f := sos(expr, 1);
+		elif x = 2 then
+			f := sos(expr, 2);
+		else error "please choose the type of variables: 1 is real and 2 is nonnegative!";
+		fi;
+		if f = {} then 
+			return {}
+		else print(`We must prove`);
+			print(ineqconvert(expand(expr) >= 0));
+			print(`Please prove the followings`);
+			for i to nops(f) do 
+				print(ineqconvert(expand(op(i, f)) >= 0 ))
+			od;
+		fi;
+	elif degree(expr) = 5 then
+		f := sos(expr);
+		if f <> {} then 
+			print(`We must prove`);
+			print(ineqconvert(expand(expr) >= 0));
+			print(`Please prove the followings`);
+			for i to nops(f) do 
+				print(ineqconvert(expand(op(i, f)) >= 0 ))
+			od;
+		else return {}
+		fi;
+	elif degree(expr) = 6 then
+		f := sos(expr);
+		if f = {} then 
+			return {}
+		else print(`We must prove`);
+			print(ineqconvert(expand(expr) >= 0));
+			print(`Please prove the followings`);
+			for i to nops(f) do 
+				print(ineqconvert(expand(op(i, f)) >= 0 ))
+			od;
+		fi;
+	elif degree(expr) = 3 then
+		f := sgm(giv(1, a, b, c, 1)*(a-b)^2);
+		g := giv(1, a, b, c, 1)*(a-b)^2 + giv(1, a, b, c, 4)*(b-c)^2 + giv(1, a, b, c, 7)*(c-a)^2;
+		h := expr*sgm(a^2-a*b);
+		so1 := jjsolve(gget(expr = f,[a, b, c]));
+		so2 := jjsolve(gget(expr = g,[a, b, c]));
+		if so1 <> {} then 
+			print(`We must prove`);
+			print(ineqconvert(expand(expr) >= 0));
+			su1 := facE(subs(so1, f))/denom(expr);
+			print(`Please prove the followings`);
+			for i to nops(su1) do 
+				print(ineqconvert(expand(op(i, su1)) >= 0 ))
+			od;
+		elif so2 <> {} then
+			print(`We must prove`);
+			print(ineqconvert(expand(expr) >= 0));
+			su2 := facE(subs(so2, f))/denom(expr);
+			print(`Please prove the followings`);
+			for i to nops(su2) do 
+				print(ineqconvert(expand(op(i, su2)) >= 0 ))
+			od;
+		else print(cat(`By multiplying the inequality by`, a^2 +b^2 +c^2-ab-bc-ca));
+			print(`We must prove`);
+			print(ineqconvert(h >= 0));
+			f := sos(h);
+			if f <> {} then 
+				print(`Please prove the followings`);
+				for i to nops(f) do 
+					print(ineqconvert(expand(op(i, f)) >= 0 ))
+				od;
+			else return {}
+			fi;
+		fi;
+	else error "this program can only work in degree 3 or 4 or 5 or 6, please try another one, %1", expr;
+	fi;
+	fi;
+	print(time[real]() - sj);
+end:
+
+GCD := proc ()
+	local e, i, f, ii;
+	e := {args};
+	for i to nops(e) do
+		if type(e[i], integer) = false then
+			error "input must be an integer"
+		fi;
+	od;
+	if nops(e) = 1 then
+		return op(e)
+	else 
+		f := gcd(e[1] ,e[2]);
+		ii := (e minus {e[1] ,e[2]}) union {f};
+		if nops(ii) = 1 then
+			return f
+		else GCD(op(ii))
+		fi;
+	fi;
+end:
+
+fillcoeffs := proc (f)
+	local tmp, i, mem;
+	tmp := {};
+	for i to nops(f) do 
+		mem[i] := op(1, {op(op(i, f))});
+		if type(mem[i], numeric) = true then
+			tmp := tmp union {mem[i]}
+		else tmp := tmp union {1}
+		fi;
+	od;
+	return tmp;
+end:
+
+fractionGCD := proc(expr)
+	local tmp, f, g, i, k;
+	tmp := fillcoeffs(expr);
+	for i to nops(tmp) do
+		f[i] := numer(op(i, tmp));
+		g[i] := denom(op(i, tmp));
+	od;
+	return GCD(seq(f[i], i = 1 .. nops(tmp)))/GCD(seq(g[i], i = 1 .. nops(tmp)));
+end:
+
+temp := proc (deg, x)
+	local ee1, ee2, dd1, dd2, tmp, i, tt, mm, kk, j;
+	dd1 := {}:
+	dd2 := {}:
+	ee1 := {(a-2*b)^4, (a-b)^4, (2*a-b)^4, (2*a-b-c)^4, (a^2-b^2)^2, (a^2-b*c)^2, (a*b-2*a*c+b*c)^2, (a^2-2*a*c+b*c)^2, (a^2-2*a*b+b*c)^2, (a^2-a*c+b^2-b*c)^2, (2*a^2-a*b-a*c-b^2+2*b*c-c^2)^2, a^2*(a-b)^2, b^2*(a-b)^2, c^2*(a-b)^2, (a-2*b)^2*(a+b-2*c)^2, (a-b)^2*(a-2*b)^2, (a-b)^2*(2*a-b)^2, (a-b)^2*(b-2*c)^2, (a-b)^2*(b-c)^2, (a-b)^2*(2*b-c)^2, (a-b)^2*(a+b-3*c)^2, (a-b)^2*(a+b-2*c)^2, (a-b)^2*(a+b-c)^2, (2*a-b)^2*(a+b-2*c)^2, (a-b)^2, (2*a-b-c)^2, (a^2-a*b-a*c-b^2+2*b*c)^2, (b^2-a*b-a*c-a^2+2*b*c)^2}:
+	ee2 := {sgm(a^2-a*b)^2, pro(a-b)^2, sgm(a*b*(a+b)-2*a*b*c)^2, sgm(a^3+pro(a)-a*b^2-a^2*b)^2, sgm(a^2-b*c)*sgm(a^2*b^2-a^2*b*c), sgm(a^3*b^3*(a-c)^2*(b-c)^2)/sgm(a^2*b^2-a^2*b*c), sgm(a*(a-b)^2*(a-c)^2)/sgm(a^2-b*c)}:
+	for i to nops(ee1) do 
+		if degree(op(i, ee1)) <= deg then
+			dd1 := dd1 union {op(i, ee1)}
+		fi:
+	od:
+	for i to nops(ee2) do 
+		if degree(op(i, ee2)) <= deg then
+			dd2 := dd2 union {op(i, ee2)}
+		fi:
+	od:
+	tt := {}:
+	mm := {}:
+	tmp := {}:
+	kk := 0:
+	if x = 1 then
+		for i to nops(dd2) do
+			tt := tt union {giv(deg - degree(op(i, dd2)), a, b, c, nops(indets(tt) minus {a, b, c}) + 1)*op(i, dd2)};
+		od;
+		for i to nops(dd1) do
+			mm := mm union {giv(deg - degree(op(i, dd1)), a, b, c, nops(indets(mm) minus {a, b, c}) + nops(indets(tt) minus {a, b, c}) + 1)*op(i, dd1)}
+		od;
+		tmp := tt union convcyclicset(op(mm));
+		for i to nops(tmp) do
+			kk := kk + op(i, tmp)
+		od;
+		return kk
+	elif x = 2 then
+		mm := convcyclicset(op(dd1)) union dd2;
+		for i to nops(mm) do
+			kk := kk + giv(deg - degree(op(i, mm)), a, b, c, nops(indets(kk) minus {a, b, c}) + 1)*op(i, mm)
+		od;
+		return kk
+	else error "invalid input: 1 is symmetric or cyclic and 2 is general! %1",x;
+	fi;
+end:
+
+gsos3 := proc (expr)
+	local fom, tmp, s1, s2, mo, me;
+	tmp := giv(1, a, b, c, 1)*(a-b)^2+giv(1, a, b, c, 4)*(b-c)^2+giv(1, a, b, c, 7)*(c-a)^2;
+	s2 := jjsolve(gget(numer(expr) = tmp,[a,b,c]));
+	me := facE(subs(s2, tmp))/denom(expr);
+	if s2 = {} then me := {} fi;
+	return me;
+end:
+
+sos := proc (expr, x)
+	local deg, tmp, sol, t, sol1, sol2, sol3, sl1, sl2, tm, f, koa;
+	if _params['x'] = 1 then
+		t := 1
+	elif _params['x'] = 2 then
+		t := 2
+	elif _params['x'] = NULL then
+		t := 1
+	else error "invalid input: NULL or 1 is symmetric or cyclic and 2 is general! %1",x;
+	fi;
+	deg := degree(numer(expr));
+	tmp := temp(deg, t);
+	f := numer(expr);
+	if t = 2 then 
+		tm := sgm(poly([a,b,c] , deg - 2, 0)*(a-b)^2);
+	else tm := sgm(poly([a,b,c], deg - 2, 0, sym(c))*(a-b)^2);
+	fi;
+	koa := jjsolve(solve(gget(f = tm,[a,b,c])));
+	if koa <> {} then
+		return facE(subs(koa, tm))/denom(expr)
+	else sol := jjsolve(gget(numer(expr) = tmp, [a, b, c]));
+		if sol <> {} then
+			return facE(subs(sol, tmp))/denom(expr);
+		elif deg = 3 then
+			sol1 := nsos3(numer(expr));
+			sol2 := gsos3(numer(expr));
+			sol3 := sos(numer(expr)*sgm(a^2-b*c));	
+			if sol1 <> {} then 
+				return sol1/denom(expr)
+			elif sol2 <> {} then
+				return sol2/denom(expr)
+			elif sol3 <> {} then
+				return sol3/(denom(expr)*sgm(a^2-b*c))
+			else return {}
+			fi;
+		elif deg = 5 then 
+			sol := ksos5(expr);
+			if sol = {} then 
+				return {}
+			else return sol/denom(expr);
+			fi;
+		elif deg = 4 then
+			sol := solve01(expr);
+			if sol = {} then 
+				return {}
+			else return sol/denom(expr);
+			fi;
+		else return {}
+		fi;
+	fi;
+end:
+
+nsos := proc (expr, x)
+	local deg, tmp, sol, t, sol1, sol2, sol3, sl1, sl2, tm, f, koa;
+	if _params['x'] = 1 then
+		t := 1
+	elif _params['x'] = 2 then
+		t := 2
+	elif _params['x'] = NULL then
+		t := 1
+	else error "invalid input: NULL or 1 is symmetric or cyclic and 2 is general! %1",x;
+	fi;
+	deg := degree(numer(expr));
+	tmp := temp(deg, t);
+	f := numer(expr);
+	if t = 2 then 
+		tm := sgm(poly([a,b,c] , deg - 2, 0)*(a-b)^2);
+	else tm := sgm(poly([a,b,c], deg - 2, 0, sym(c))*(a-b)^2);
+	fi;
+	koa := gsolve(solve(gget(f = tm,[a,b,c])));
+	if koa <> {} then
+		return facE(subs(koa, tm))/denom(expr)
+	else sol := gsolve(gget(numer(expr) = tmp, [a, b, c]));
+		if sol <> {} then
+			return facE(subs(sol, tmp))/denom(expr);
+		elif deg = 3 then
+			sol1 := nsos3(numer(expr));
+			sol2 := gsos3(numer(expr));
+			sol3 := sos(numer(expr)*sgm(a^2-b*c));	
+			if sol1 <> {} then 
+				return sol1/denom(expr)
+			elif sol2 <> {} then
+				return sol2/denom(expr)
+			elif sol3 <> {} then
+				return sol3/(denom(expr)*sgm(a^2-b*c))
+			else return {}
+			fi;
+		elif deg = 5 then 
+			sol := ksos5(expr);
+			if sol = {} then 
+				return {}
+			else return sol/denom(expr);
+			fi;
+		elif deg = 4 then
+			sol := solve01(expr);
+			if sol = {} then 
+				return {}
+			else return sol/denom(expr);
+			fi;
+		else return {}
+		fi;
+	fi;
+end:
+
+dcpsy := proc (f,x)
+	local g,eq1,eq2,sol1,sol2;
+	g:=(m[1]*a^2+m[2]*(b^2+c^2)+m[3]*a*(b+c)+m[4]*b*c)/sgm(a*b*m[5]+a^2);
+	eq1 := {subs({a = 1, b = 1, c = 1}, numer(factor(sgm(g)))-x*denom(factor(sgm(g)))) = 0};
+	eq2 := {subs({a = 1}, diff(subs({b = 1, c = 1}, f), a)) = subs({a = 1}, diff(subs({b = 1, c = 1}, g), a))};
+	sol1 := solve(eq2 union eq1 union {m[2] = 0, m[4] = 0, m[5] = 0});
+	sol2 := solve(eq2 union eq1 union {m[2] = 0, m[4] = 0, m[5] = 2});
+	if sol1 = NULL and sol2 = NULL then
+		return {}
+	else if sos(sgm(subs(sol1,g))-x)<>{} then 
+		return f>=subs(sol1,g)
+		elif sos(sgm(subs(sol2,g))-x)<>{} then 
+		return f>=subs(sol2,g)
+		else return {}
+		fi;
+	fi;
+end:
